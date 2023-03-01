@@ -27,7 +27,10 @@ class UserController extends Controller
             return redirect('admin/home');
             
         }
-        return redirect('login');
+        return redirect('login')->withErrors([
+            'email'=>'Failed!',
+            'password'=>'Failed!',
+        ]);
     }
     public function logout()
     {
@@ -42,7 +45,8 @@ public function index(){
     {
         $sort->orderBy('created_at','desc'); // sorting articles 
     }])
-    ->get();
+    ->paginate(10);
+    // dd($users->articles);
     return view('admin.users.users-index',compact('users'));
 }
 
@@ -79,13 +83,15 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'name' => 'required|string|max:25|min:3',
-        'email' => 'required|email|max:25|min:3',
-        'current_password' => 'required|confirmed',
-        'password' => 'required|min:8'
+        'email' => 'required|email|max:25|min:3'
     ]);
     
-    if ($request->has('password') && $request->has('current_password'))
+    if (($request->filled('password') && $request->filled('current_password')))
     {
+        $request->validate([
+            'current_password' => 'required|confirmed',
+            'password' => 'required|min:8'
+        ]);
         $user = User::findOrFail($id);
                     /*
                     param1->password that has been entered on the form

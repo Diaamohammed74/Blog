@@ -13,6 +13,9 @@
 @endsection
 
 @section('content')
+        <div class="p-1">
+            <a href="{{route('categories')}}" class="btn btn-outline-primary col-2" role="button" aria-pressed="true">Back to Categories</a>
+        </div>
     <div class="card card-info">
         <div class="card-header">
             <h3 class="card-title">Create Category</h3>
@@ -37,7 +40,7 @@
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="submit" class="btn btn-success">Create</button>
             </div>
             <!-- /.card-footer -->
         </form>

@@ -41,6 +41,8 @@
                             {{ $article->title }}<br>
                             <b>Category:</b>
                             {{ $article->category->name }}<br> {{-- getting the category name of the article --}}
+                            <b>Sub Category:</b>
+                            {{ $article->subcategory->name }}<br> {{-- getting the category name of the article --}}
                         </td>
 
                         <td>
@@ -96,5 +98,57 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="d-flex justify-content-center mt-3">
+
+            {{ $articles->links() }}
+
+            <style>
+                .w-5 {
+                    display: none;
+                }
+
+                .pagination {
+                    border: 1px solid rgb(7, 22, 195);
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                }
+
+                .pagination li {
+                    display: inline-block;
+                    margin-right: 5px;
+                }
+
+                .pagination li a {
+                    color: black;
+                    text-decoration: none;
+                    padding: 5px 10px;
+                    border: 1px solid #ccc;
+                }
+
+                .pagination li.active a {
+                    color: white;
+                    background-color: #007bff;
+                    border-color: #007bff;
+                }
+
+                .pagination li.disabled a {
+                    color: #ccc;
+                    pointer-events: none;
+                    border-color: #cccccc;
+                }
+
+                .pagination .page-link {
+                    border: none;
+                    background-color: transparent;
+                    color: black;
+                }
+
+                .pagination .page-item.disabled .page-link {
+                    background-color: transparent;
+                    border-color: transparent;
+                }
+            </style>
+        </div>
     </div>
 @endsection

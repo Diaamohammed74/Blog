@@ -3,6 +3,7 @@
 @section('PageHeader')
     Users
 @endsection
+
 @section('PageTitle')
     View-Users
 @endsection
@@ -25,6 +26,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $user->name }}</td>
+
                         <td>{{ $user->email }}</td>
 
                         <td>
@@ -36,7 +38,6 @@
                                 N/A
                             @endif
                         </td>
-
 
                         <td>
                             <div class="btn-group manage-button">
@@ -52,17 +53,18 @@
                                         <i class="fas fa-edit"></i> Update
                                     </a>
                                     @if (auth()->user()->email == 'diaa@example.org')
-                                    <form action="{{ route('users/delete', $user->id) }}" method="POST" class="delete-form">
-                                        @csrf
-                                        @method('delete')
-                                        <button type="submit" class="dropdown-item delete-button">
+                                        <form action="{{ route('users/delete', $user->id) }}" method="POST"
+                                            class="delete-form">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" class="dropdown-item delete-button">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="submit" class="dropdown-item delete-button" disabled>
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
-                                    </form>
-                                    @else
-                                    <button type="submit" class="dropdown-item delete-button" disabled>
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
                                     @endif
                                 </div>
                             </div>
@@ -82,5 +84,57 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="d-flex justify-content-center mt-3">
+
+            {{ $users->links() }}
+
+            <style>
+                .w-5 {
+                    display: none;
+                }
+
+                .pagination {
+                    border: 1px solid rgb(7, 22, 195);
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                }
+
+                .pagination li {
+                    display: inline-block;
+                    margin-right: 5px;
+                }
+
+                .pagination li a {
+                    color: black;
+                    text-decoration: none;
+                    padding: 5px 10px;
+                    border: 1px solid #ccc;
+                }
+
+                .pagination li.active a {
+                    color: white;
+                    background-color: #007bff;
+                    border-color: #007bff;
+                }
+
+                .pagination li.disabled a {
+                    color: #ccc;
+                    pointer-events: none;
+                    border-color: #cccccc;
+                }
+
+                .pagination .page-link {
+                    border: none;
+                    background-color: transparent;
+                    color: black;
+                }
+
+                .pagination .page-item.disabled .page-link {
+                    background-color: transparent;
+                    border-color: transparent;
+                }
+            </style>
+        </div>
     </div>
 @endsection

@@ -16,7 +16,6 @@
                         <div class="small-box bg-info">
                             <div class="inner">
                                 <h3>{{ $articles->count() }}</h3>
-
                                 <p>Articles</p>
                             </div>
                             <div class="icon">
@@ -149,11 +148,6 @@
                 <!-- /.row -->
                 <!-- Main row -->
                 {{--double contents end--}}
-
-
-
-
-                
                 <!-- /.row (main row) -->
             </div><!-- /.container-fluid -->
         </section>

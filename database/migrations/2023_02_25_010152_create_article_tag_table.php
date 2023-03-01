@@ -13,15 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('article__tags', function (Blueprint $table) {
-            // $table->id();
-            $table->foreignId('article_id')->references('id')->on('articles')->onDelete('cascade');
-            $table->foreignId('tag_id')->references('id')->on('tags')->onDelete('cascade');
-            $table->primary(array('article_id','tag_id'));
+        Schema::create('article_tag', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('article_id')->references('id')->on('articles');
+            $table->foreignId('tag_id')->references('id')->on('tags');
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('article__tags');
+        Schema::dropIfExists('article_tag');
     }
 };

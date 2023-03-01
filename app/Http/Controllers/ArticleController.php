@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tags;
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -13,28 +15,43 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = Article::orderBy('created_at', 'desc')->get();
-        dd($articles);
-        // $articles = Article::orderByRaw('LENGTH(title)')->get();
-
-
-
+        $articles = Article::orderBy('created_at', 'desc')->paginate(5);
         return view('admin.articles.articles-index',compact('articles'));
     }
 
     public function create()
     {
-        $categories=Category::paginate(); // to show categories in creation page
-        return view('admin.articles.articles-create',compact('categories'));
+        $categories = Category::with('subcategory')->get();
+        $tags=Tags::get();
+        return view('admin.articles.articles-create',compact('categories','tags'));
     }
+
+
+    public function getByCategory(Request $request)
+    {
+        $subcategories = SubCategory::where('category_id', $request->category_id)->get();
+
+        return response()->json($subcategories);
+    }
+
+    public function autocomplete(Request $request){
+        $res = Tags::select("name")
+            ->where("name","LIKE","%{$request->term}%")
+            ->get();
+        return response()->json($res);
+    }
+
 
     public function store(Request $request)
     {
         $request->validate([
             'title'=>"required|max:40|min:3",
-            'short_description'=>"required|max:160|min:50",
-            'content'=>"required|max:800|min:160",
-            'select'=>"required",
+            'short_description'=>"required|max:160|min:20",
+            'content'=>"required|min:20",
+            'category'=>"required",
+            'subcategory'=>"required",
+            'tags' => 'required|array|min:1',
+            'tags.*' => 'required|string',
             'cover' => ['required', 'image', 'max:2048'] 
         ]);
 
@@ -48,16 +65,27 @@ class ArticleController extends Controller
             */
         );
 
-        $article=Article::create([
+        Article::create([
             'title'=>$request->title,
             'short_description'=>$request->short_description,
             'content'=>$request->content,
-            'category_id'=>$request->select,
             'cover'=>$path,
+            'category_id'=>$request->category,
+            'sub_category_id'=>$request->subcategory,
             'user_id' => auth()->user()->id
         ]);
-        
-        return back()->with('success'," $article->title Article Posted Successfuly");
+        $article_id = Article::latest('id')->first()->id;
+        foreach ($request->tags as $tag)
+        {
+        DB::table('article_tag')
+        ->insert([
+            'article_id' => $article_id ,
+            'tag_id' => $tag
+            ] );
+        }
+
+
+        return back()->with('success',"Article Posted Successfuly");
     }
 
 
@@ -69,31 +97,44 @@ class ArticleController extends Controller
 
     public function edit($id)
     {
-        $article=Article::find($id);
-        // dd($article->cover);
-        $categories=Category::all();
-        return view('admin.articles.articles-edit',compact(['article','categories']));
+        $article=Article::with(['subcategory','tags'])->find($id);
+        $categories = Category::get();
+        $subcategories=SubCategory::get();
+        $tags = Tags::with('articles')->get();
+        return view('admin.articles.articles-edit', [
+            'article' => $article,
+            'categories' => $categories,
+            'tags' => $tags,
+            'subcategories' => $subcategories,
+        ]);
     }
 
 
     public function update(Request $request, $id)
     {
+        // dd($request);
         $request->validate([
-            'title'=>"required|max:40|min:3",
-            'short_description'=>"required|max:160|min:50",
-            'content'=>"required|max:800|min:160",
-            'cover' => ['required,image', 'max:2048'] 
+            'title' => 'required|max:40|min:3',
+            'short_description' => 'required|max:160|min:20',
+            'content' => 'required|min:20',
+            'category' => 'required',
+            'subcategory' => 'required',
+            'tags' => 'required|array|min:1',
+            'tags.*' => 'required|string',
+            //'.*'-> each element of the array is validated individually
+            'cover' => 'sometimes|required|image|max:2048'
         ]);
+        $article=Article::findOrFail($id);
         if ($request->hasFile('cover'))
         {
-            $image=$request->file('cover')->getClientOriginalName();
-            $path=$request->file('cover')->storeAs(
-                'articles',$image,'blog');
+            $image = $request->file('cover')->getClientOriginalName();
+            $path = $request->file('cover')->storeAs('articles', $image, 'blog');
             DB::table('articles')->where('id', '=', $id)->update([
                 'title' => $request->title,
                 'short_description' => $request->short_description,
                 'content' => $request->content,
-                'category_id'=>$request->select,
+                'category_id' => $request->category,
+                'sub_category_id' => $request->subcategory,
                 'cover' => $path
             ]);
         } 
@@ -103,10 +144,14 @@ class ArticleController extends Controller
                 'title' => $request->title,
                 'short_description' => $request->short_description,
                 'content' => $request->content,
-                'category_id'=>$request->select
+                'category_id' => $request->category,
+                'sub_category_id' => $request->subcategory
             ]);
         }
-        return redirect('admin/articles')->with('success','Article Updated Successfuly');
+        $article->tags()->sync($request->tags);
+
+        return redirect('admin/articles')->with('success', 'Article Updated Successfully');
+        
     }
 
     public function destroy($id)

@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('PageTitle')</title>
-
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -28,6 +26,15 @@
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins//daterangepicker/daterangepicker.css">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins//summernote/summernote-bs4.min.css">
+    {{-- <link rel="stylesheet" href="{{ asset('assets') }}/dist/css/custom.css"> --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+
+
+
+        
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -294,6 +301,37 @@
                                 data-accordion="false">
                                 <!-- Add icons to the links using the .nav-icon class
                     with font-awesome or any other icon font library -->
+                                <li class="nav-item ">
+                                    <a href="#"
+                                        class="nav-link {{ Request::routeIs('sub_categories') ? 'active' : '' }} ">
+                                        <i class="nav-icon fas fa-align-left "></i>
+                                        <p>
+                                            Subcategories
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{ route('sub_categories') }}"
+                                                class="nav-link {{ Request::routeIs('sub_categories') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>View All SubCategories</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('sub_category/create') }}"
+                                                class="nav-link {{ Request::routeIs('sub_category/create') ? 'active' : '' }}">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add new Subcategory</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                                data-accordion="false">
+                                <!-- Add icons to the links using the .nav-icon class
+                    with font-awesome or any other icon font library -->
                                 <li class="nav-item menu-close ">
 
                                     <a href="#"
@@ -461,10 +499,17 @@
     <script src="{{ asset('assets') }}/plugins//overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets') }}/dist/js/adminlte.js"></script>
+        <!-- Select2 JS -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     {{-- <script src="{{ asset('assets') }}/dist/js/demo.js"></script> --}}
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     {{-- <script src="{{ asset('assets') }}/dist/js/pages/dashboard.js"></script>     --}}
+    <script type="text/javascript">
+        $('#summernote').summernote({
+            height: 400
+        });
+    </script>
 </body>
 
 </html>

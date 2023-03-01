@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+// use App\Models\SubCategory;
 use Illuminate\Http\Request;
-
+// use App\Repository\CategoryRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use App\Repository\CategoryInterface;
+use App\Repository\CategoryIntreface;
+// use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $category=Category::orderBy('name','asc')->get();
-        return view('admin.categories.categories-index',compact('category'));
+        $categories=Category::orderBy('name','asc')->withCount('subcategory')->paginate(5);
+        // dd($categories);
+        return view('admin.categories.categories-index',compact('categories'));
     }
 
     public function create()
@@ -49,8 +53,6 @@ class CategoryController extends Controller
 
     public function update($id,Request $request)
     {
-        // $category = Category::find($request->id);
-        // $category->update($request->name);
         $request->validate([
             'name'=>"required|max:15|min:3|unique:categories,name"
         ]);
@@ -68,4 +70,45 @@ class CategoryController extends Controller
         $category->delete();
         return back()->with("deleted","$category->name Category Deleted Successfully");
     }
+
+
+
+
+
+    //api
+
+
+    // private CategoryInterface $categoryRepository;
+
+    // public function __construct(CategoryInterface $categoryRepository) 
+    // {
+    //     $this->categoryRepository = $categoryRepository;
+    // }
+    // public function index(){
+    //     return response()->json(['data'=>$this->categoryRepository->index(),'status'=>200]);
+    // }
+
+    // public function show($id){
+    //     $category=Category::findOrFail($id);
+    //     return response()->json(['data'=>$category,'status'=>'200']);
+    // }
+    // public function store(Request $request){
+    // Category::create($request->all());
+    // return response()->json(['status'=>'200','message'=>'Category Created']);
+    // }
+    // public function delete($id){
+
+    //     $category=Category::findOrFail($id);
+    //     $category->delete();
+    //     return response()->json(['status'=>'201','message'=>'Category deleted']);
+    // }
+    // public function update($id,Request $request){
+    //     DB::table('categories')
+    //     ->where('id','=',$id)
+    //     ->update([
+    //         'name'=>$request->name
+    //     ]);
+    // return response()->json(['status'=>'200','message'=>'Category updated']);   
+    // }
+
 }

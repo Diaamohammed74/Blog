@@ -1,75 +1,71 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MainController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubCategoryController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+
         //Login Routes
-Route::get("login",[UserController::class,"login"])->name('login');
-Route::post("loginrequest",[UserController::class,"loginrequest"])->name('loginrequest');
-Route::get("logout",[UserController::class,"logout"])->name('logout');
+Route::get("login",'UserController@login')->name('login');
+Route::post("loginrequest",'UserController@loginrequest')->name('loginrequest');
+Route::get("logout",'UserController@logout')->name('logout');
 
 
 // Home Route
 Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
-    Route::get('home',[MainController::class,'index'])->name('home');
+        Route::get('home','MainController@index')->name('home');
 });
-
 
         //Categories Routes
 Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
-    Route::get('categories',[CategoryController::class,'index'])->name('categories');
-    Route::get('categories/create',[CategoryController::class,'create'])->name('categories/create');
-    Route::post('categories/store',[CategoryController::class,'store'])->name('categories/store');
-    Route::get('categories/edit/{id}',[CategoryController::class,'edit']);
-    Route::post('categories/update/{id}',[CategoryController::class,'update']);
-    Route::delete('categories/delete/{id}',[CategoryController::class,'destroy'])->name('categories/delete');
+        Route::get('categories','CategoryController@index')->name('categories');
+        Route::get('categories/create','CategoryController@create')->name('categories/create');
+        Route::post('categories/store','CategoryController@store')->name('categories/store');
+        Route::get('categories/edit/{id}','CategoryController@edit')->name('categories/edit');
+        Route::post('categories/update/{id}','CategoryController@update')->name('categories/update');
+        Route::delete('categories/delete/{id}','CategoryController@destroy')->name('categories/delete');
 });
-
-
 
 
         //articles Routes
 Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
-    Route::get('articles',[ArticleController::class,'index'])->name('articles');
-    Route::get('articles/create',[ArticleController::class,'create'])->name('articles/create');
-    Route::post('articles/store',[ArticleController::class,'store'])->name('articles/store');
-    Route::get('articles/edit/{id}',[ArticleController::class,'edit'])->name('articles/edit');
-    Route::get('articles/show/{id}',[ArticleController::class,'show'])->name('articles/show');
-    Route::post('articles/update/{id}',[ArticleController::class,'update'])->name('articles/update');
-    Route::delete('articles/delete/{id}',[ArticleController::class,'destroy'])->name('articles/delete');
+        Route::get('articles','ArticleController@index')->name('articles');
+        Route::get('articles/create','ArticleController@create')->name('articles/create');
+        Route::post('articles/store','ArticleController@store')->name('articles/store');
+        Route::get('articles/edit/{id}','ArticleController@edit')->name('articles/edit');
+        Route::get('articles/show/{id}','ArticleController@show')->name('articles/show');
+        Route::post('articles/update/{id}','ArticleController@update')->name('articles/update');
+        Route::delete('articles/delete/{id}','ArticleController@destroy')->name('articles/delete');
+        Route::get('/subcategories/get', 'ArticleController@getByCategory')->name('subcategories.get');
+        Route::get('/autocomplete', 'ArticleController@autocomplete')->name('autocomplete');
+
+
 });
 
         //users Routes
 Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
-    Route::get('users',[UserController::class,'index'])->name('users');
-    Route::get('users/create',[UserController::class,'create'])->name('users/create');
-    Route::post('users/store',[UserController::class,'store'])->name('users/store');
-    Route::get('users/edit/{id}',[UserController::class,'edit'])->name('users/edit');
-    Route::get('users/show/{id}',[UserController::class,'show'])->name('users/show');
-    Route::post('users/update/{id}',[UserController::class,'update'])->name('users/update');
-    Route::delete('users/delete/{id}',[UserController::class,'destroy'])->name('users/delete');
+        Route::get('users','UserController@index')->name('users');
+        Route::get('users/create','UserController@create')->name('users/create');
+        Route::post('users/store','UserController@store')->name('users/store');
+        Route::get('users/edit/{id}','UserController@edit')->name('users/edit');
+        Route::get('users/show/{id}','UserController@show')->name('users/show');
+        Route::post('users/update/{id}','UserController@update')->name('users/update');
+        Route::delete('users/delete/{id}','UserController@destroy')->name('users/delete');
 });
 
-        //Categories Routes
+        //SubCategories Routes
 Route::group(['prefix'=>"admin/categories","middleware"=>"auth"],function(){
-        Route::get('sub_categories',[SubCategoryController::class,'index'])->name('sub_categories');
-        Route::get('sub_category/create',[SubCategoryController::class,'create'])->name('sub_category/create');
-        Route::post('sub_category/store',[SubCategoryController::class,'store'])->name('sub_category/store');
-        Route::get('sub_category/edit/{id}',[SubCategoryController::class,'edit'])->name('sub_category/edit');
-        Route::post('sub_category/update/{id}',[SubCategoryController::class,'update'])->name('sub_category/update');
-        Route::delete('sub_category/delete/{id}',[SubCategoryController::class,'destroy'])->name('sub_category/delete');
+        Route::get('sub_categories','SubCategoryController@index')->name('sub_categories');
+        Route::get('sub_category/create','SubCategoryController@create')->name('sub_category/create');
+        Route::post('sub_category/store','SubCategoryController@store')->name('sub_category/store');
+        Route::get('sub_category/edit/{id}','SubCategoryController@edit')->name('sub_category/edit');
+        Route::post('sub_category/update/{id}','SubCategoryController@update')->name('sub_category/update');
+        Route::delete('sub_category/delete/{id}','SubCategoryController@destroy')->name('sub_category/delete');
+});
+        //Tags Routes
+Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
+        Route::get('tags','TagsController@index')->name('tags');
+        Route::get('tag/create','TagsController@create')->name('tag/create');
+        Route::post('tag/store','TagsController@store')->name('tag/store');
+        Route::get('tag/edit/{id}','TagsController@edit')->name('tag/edit');
+        Route::post('tag/update/{id}','TagsController@update')->name('tag/update');
+        Route::delete('tag/delete/{id}','TagsController@destroy')->name('tag/delete');
 });

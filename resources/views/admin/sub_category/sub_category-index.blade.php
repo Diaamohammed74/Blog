@@ -1,58 +1,62 @@
 @extends('admin.layouts.app')
 
 @section('PageHeader')
-    Articles
+    Subcategories
 @endsection
 
 @section('PageTitle')
-    View-Articles
+    View-Subcategories
 @endsection
 
 @section('content')
+
     <div class="card-body">
+        <div class="p-1">
+            <a href="{{route('sub_category/create')}}" class="btn btn-outline-primary " role="button" aria-pressed="true">Add new Subcategory</a>
+            <a href="{{route('categories')}}" class="btn btn-outline-info" role="button" aria-pressed="true">Show Parent Categories</a>
+        </div>
         @include('admin.layouts.messages')
         <table class="table table-bordered">
             <thead>
 
                 <tr>
                     <th>#</th>
-                    <th>Cover</th>
-                    <th>Title</th>
-                    <th>Short Description</th>
-                    <th>Writer</th>
-                    <th>Created at</th>
+                    <th>Subcategory Name</th>
+                    <th>Parent Category</th>
+                    <th>No.Related Articles</th>
+                    <th>Related Articles</th>
+                    {{-- <th>Created at</th> --}}
                     <th>Action</th>
                 </tr>
 
             </thead>
             <tbody>
-                @forelse ($articles as $article)
+                @forelse ($subcategories as $subcategory)
                     <tr>
                         <td>
                             {{ $loop->iteration }}
                         </td>
-                        <td style="width: 70px; height: 90px;">
-                            <img src="{{ asset('imgs/' . $article->cover) }}" alt="Article img"
-                                style="max-width: 100%; max-height: 100%;">
+                        <td>
+                            {{ $subcategory->name }}
                         </td>
 
                         <td>
-                            <b>Article:</b>
-                            {{ $article->title }}<br>
-                            <b>Category:</b>
-                            {{ $article->category->name }}<br> {{-- getting the category name of the article --}}
+                            {{ $subcategory->category->name }}
                         </td>
 
                         <td>
-                            {{ $article->short_description }}
+                            {{ $subcategory->article()->count() }}
                         </td>
+                        <td>
+                            @if ($subcategory->article->count() > 0)
+                                @foreach ($subcategory->article as $article)
+                                    <a href="{{route('articles/show',$article->id)}}">{{ $article->title }}</a><br>
+                                @endforeach
+                            @else
+                                N/A
+                            @endif
 
-                        <td style="width: 6%">
-                            {{ $article->user->name }} {{-- getting the writer name of the article --}}
-                        </td>
 
-                        <td style="width: 10%">
-                            {{ $article->created_at->diffForHumans() }}
                         </td>
 
                         <td> {{-- manage group button --}}
@@ -62,20 +66,16 @@
                                     <i class="fas fa-cog"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="{{ route('articles/show', $article->id) }}">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
                                     <a class="dropdown-item disabled-link"
-                                        href="{{ route('articles/edit', $article->id) }}">
+                                        href="{{ route('sub_category/edit', $subcategory->id) }}">
                                         <i class="fas fa-edit"></i> Update
                                     </a>
 
-                                    <form action="{{ route('articles/delete', $article->id) }}" method="POST"
+                                    <form action="{{ route('sub_category/delete', $subcategory->id) }}" method="POST"
                                         class="delete-form">
                                         @csrf
                                         @method('delete')
-                                        <button type="submit" class="dropdown-item delete-button"
-                                            @if (auth()->user()->id != $article->user->id) disabled @endif>
+                                        <button type="submit" class="dropdown-item delete-button">
                                             <i class="fas fa-trash"></i> Delete
                                         </button>
                                     </form>
@@ -85,7 +85,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="5">
                             <div class="alert alert-primary text-center " role="alert">
                                 <div>
                                     There is no data
@@ -96,5 +96,57 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="d-flex justify-content-center mt-3">
+
+            {{ $subcategories->links() }}
+
+            <style>
+                .w-5 {
+                    display: none;
+                }
+
+                .pagination {
+                    border: 1px solid rgb(7, 22, 195);
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 10px;
+                }
+
+                .pagination li {
+                    display: inline-block;
+                    margin-right: 5px;
+                }
+
+                .pagination li a {
+                    color: black;
+                    text-decoration: none;
+                    padding: 5px 10px;
+                    border: 1px solid #ccc;
+                }
+
+                .pagination li.active a {
+                    color: white;
+                    background-color: #007bff;
+                    border-color: #007bff;
+                }
+
+                .pagination li.disabled a {
+                    color: #ccc;
+                    pointer-events: none;
+                    border-color: #cccccc;
+                }
+
+                .pagination .page-link {
+                    border: none;
+                    background-color: transparent;
+                    color: black;
+                }
+
+                .pagination .page-item.disabled .page-link {
+                    background-color: transparent;
+                    border-color: transparent;
+                }
+            </style>
+        </div>
     </div>
 @endsection
