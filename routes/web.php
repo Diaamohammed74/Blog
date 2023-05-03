@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\front\MainController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,6 +37,7 @@ Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
         Route::delete('articles/delete/{id}','ArticleController@destroy')->name('articles/delete');
         Route::get('/subcategories/get', 'ArticleController@getByCategory')->name('subcategories.get');
         Route::get('/autocomplete', 'ArticleController@autocomplete')->name('autocomplete');
+        Route::post('/addtag', 'ArticleController@addtag')->name('addtag');
 
 
 });
@@ -65,7 +67,16 @@ Route::group(['prefix'=>"admin","middleware"=>"auth"],function(){
         Route::get('tags','TagsController@index')->name('tags');
         Route::get('tag/create','TagsController@create')->name('tag/create');
         Route::post('tag/store','TagsController@store')->name('tag/store');
+        // Route::post('aricles/create','TagsController@tags');
         Route::get('tag/edit/{id}','TagsController@edit')->name('tag/edit');
         Route::post('tag/update/{id}','TagsController@update')->name('tag/update');
         Route::delete('tag/delete/{id}','TagsController@destroy')->name('tag/delete');
 });
+
+
+
+
+//Site Routes 
+Route::get('/',[MainController::class,'index'])->name('site/home');
+Route::get('blog/{id}',[MainController::class,'ShowBlog'])->name('blog/show');
+Route::get('category/{id}',[MainController::class,'ShowByCategory'])->name('category/show');

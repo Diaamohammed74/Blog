@@ -41,12 +41,11 @@ class ArticleController extends Controller
         return response()->json($res);
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
             'title'=>"required|max:40|min:3",
-            'short_description'=>"required|max:160|min:20",
+            'short_description'=>"required|max:200|min:20",
             'content'=>"required|min:20",
             'category'=>"required",
             'subcategory'=>"required",
@@ -83,8 +82,6 @@ class ArticleController extends Controller
             'tag_id' => $tag
             ] );
         }
-
-
         return back()->with('success',"Article Posted Successfuly");
     }
 
@@ -124,6 +121,7 @@ class ArticleController extends Controller
             //'.*'-> each element of the array is validated individually
             'cover' => 'sometimes|required|image|max:2048'
         ]);
+
         $article=Article::findOrFail($id);
         if ($request->hasFile('cover'))
         {

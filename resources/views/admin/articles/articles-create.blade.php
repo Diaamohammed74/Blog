@@ -78,15 +78,18 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div id="res">
+
+                    </div>
                     <label class="col-sm-2 col-form-label">Add new tag:</label>
                     <div class="col-sm-4">
                         <div class="input-group">
                             <div class="col-sm-4">
-                                <input type="text" class="form-control" name="new_tag" placeholder="Add a new tag"
-                                    onchange="addNewTag()">
+                                <input type="text" class="form-control" name="new_tag" id="new_tag" placeholder="Add a new tag">
+                                    {{-- onchange="addNewTag()" --}}
                             </div>
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">Add</button>
+                                <button id="add_tag" class="btn btn-primary btn-block" type="submit">ADD</button>
                             </div>
                         </div>
                     </div>
@@ -141,6 +144,44 @@
             <!-- /.card-footer -->
         </form>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+    {{-- <script>
+        $("#add_tag").click(function(event){
+            event.preventDefault();
+            let name=$("#new_tag").val();
+            $.ajax({
+            method:"POST",
+            url:"http://127.0.0.1:8000/admin/addtag",
+            headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data:{
+                name:name
+            },
+            success:function(res){
+                // console.log("YESSS");
+                $("#res").append
+                (`
+                <div class="col-sm-4">
+                        <select id="selUser" class="form-control" multiple="multiple" name="tags[]">
+                            <option value="0">Select Tags</option>
+                            @foreach ($tags as $tag)
+                                <option value="{{ $tag->id }}">${name}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                `);
+            },
+            error:function(res){
+                console.log("error");
+            }
+        });
+        });
+    </script> --}}
+    
+    
     @include('admin.scripts.tags')
     @include('admin.scripts.dropdown')
 @endsection

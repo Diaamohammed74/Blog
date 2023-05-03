@@ -85,7 +85,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5">
+                        <td colspan="6">
                             <div class="alert alert-primary text-center " role="alert">
                                 <div>
                                     There is no data
